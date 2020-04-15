@@ -31,8 +31,9 @@ if __name__ == '__main__':
     assert len(sys.argv) == 2
     path = sys.argv[1]
     assert checkValidInput()
-    G = read_input_file(path, 100)
+    n = path.split(".")[0]
+    G = read_input_file(path, int(n))
     T = solve(G)
     #assert is_valid_network(G, T)
     print("Average pairwise distance: {}".format(average_pairwise_distance(T)))
-    write_output_file(T, f'{path}.out')
+    write_output_file(T, f"{n}.out")
