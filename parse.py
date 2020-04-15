@@ -18,10 +18,9 @@ def validate_file(path):
     return True
 
 
-def read_input_file(path, max_size):
+def read_input_file(path, max_size=None):
     """
     Parses and validates an input file
-
     :param path: str, a path
     :return: networkx Graph is the input is well formed, AssertionError thrown otherwise
     """
@@ -47,7 +46,9 @@ def read_input_file(path, max_size):
         G.add_nodes_from(range(n))
 
         assert nx.is_connected(G)
-        assert len(G) <= max_size
+
+        if max_size is not None:
+            assert len(G) <= max_size
 
         return G
 
@@ -64,7 +65,6 @@ def write_input_file(G, path):
 def read_output_file(path, G):
     """
     Parses and validates an input file
-
     :param path: str, a path
     :param G: the input graph corresponding to this output
     :return: networkx Graph is the output is well formed, AssertionError thrown otherwise
