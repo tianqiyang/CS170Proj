@@ -20,7 +20,6 @@ def solve(G):
     Returns:
         T: networkx.Graph
     """
-    #draw(G)
     copy = G.copy()
     covered = {}
     T = []
@@ -29,27 +28,23 @@ def solve(G):
             T.append(i)
             for v in G[i]:
                 covered[v] = 1
+    if (len(T) == 1):
+        onlyone = nx.Graph()
+        onlyone.add_node(T[0])
+        return onlyone
     pos = set()
     for i in range(len(T)):
-        #temp = []
         for j in range(i+1, len(T)):
             temp = nx.shortest_path(G, source=T[i], target=T[j])
             for t in temp:
                 pos.add(t)
-            #print(temp[-1])
     print(pos)
-        #short = sorted(temp, key=lambda x: sum([G[temp[m]][temp[m+1]]['weight'] for m in range(len(temp)-1) if G[temp[m]][temp[m+1]] != None]))[0]
-        # for v in short:
-        #     if v not in T:
-        #         T.append(v)
     copy = G.copy()
     for re in copy:
         if re not in pos:
             G.remove_node(re)
     tree = nx.minimum_spanning_tree(G, weight='weight', algorithm='kruskal')
-    #print(tree)
-    # print(G.nodes)
-    if len(tree) == 0:
+    if len(tree) == 0 or len(G.nodes) == 0:
         onlyone = nx.Graph()
         onlyone.add_node(list(copy.nodes)[0])
         return onlyone
@@ -63,12 +58,13 @@ def solve(G):
 if __name__ == '__main__':
     testing = False
     if testing:
-        path = 'inputs/small-252.in'
+        path = 'inputs/small-19.in'
         G = read_input_file(path)
+        #draw(G)
         T = solve(G)
         assert is_valid_network(G, T)
         print("Average  pairwise distance: {}".format(average_pairwise_distance(T)))
-        write_output_file(T, 'out/25.in')
+        #write_output_file(T, 'out/25.in')
     else:
         files = [filename for root, dirs, file in os.walk("./inputs") for filename in file ]
         print(len(files))
