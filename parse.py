@@ -21,6 +21,7 @@ def validate_file(path):
 def read_input_file(path, max_size=None):
     """
     Parses and validates an input file
+
     :param path: str, a path
     :return: networkx Graph is the input is well formed, AssertionError thrown otherwise
     """
@@ -65,6 +66,7 @@ def write_input_file(G, path):
 def read_output_file(path, G):
     """
     Parses and validates an input file
+
     :param path: str, a path
     :param G: the input graph corresponding to this output
     :return: networkx Graph is the output is well formed, AssertionError thrown otherwise
@@ -97,6 +99,7 @@ def read_output_file(path, G):
             w["weight"] = edge_in_G["weight"]
         T.add_nodes_from(nodes)
 
+        assert len(T) > 0
         assert utils.is_valid_network(G, T)
 
         return T
