@@ -4,7 +4,7 @@ import random
 def getLeastNode(G):
     covered = set()
     T = set()
-    for i in sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True):
+    for i in sorted(list(G.nodes), key=lambda x: sum([G[i][x]['weight'] for i in G[x]]), reverse=True):
         if i not in covered:
             T.add(i)
             for v in G[i]:
@@ -97,7 +97,7 @@ def getTree(G, T):
             G.remove_node(re)
     return G
 
-def algo1(G):
+def algo1_2(G):
     T, baseNode = getLeastNode(G)
     if len(T) == 1:
         onlyone = nx.Graph()
