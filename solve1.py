@@ -5,6 +5,7 @@ def getLeastNode(G):
     covered = set()
     T = set()
     for i in sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True):
+    #for i in sorted(list(G.nodes), key=lambda x: sum([G[i][x]['weight'] for i in G[x]]), reverse=True):
         if i not in covered:
             T.add(i)
             for v in G[i]:
@@ -44,51 +45,42 @@ def getComponents(G, needConnect):
 
 def connectComponents(G, components, T):
     paths = []
-    for i in range(len(T)):
-        for j in range(i+1, len(T)):
-            paths.append(nx.shortest_path(G, source=T[i], target=T[j], weight='weight'))
-    paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
-    nodes = set()
+    # f
+    #     for j in range(i+1, len(T)):
+    #         paths.append(nx.shortest_path(G, source=T[i], target=T[j], weight='weight'))
+    # paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
+    # nodes = set()
+    base = components.pop()
     while components:
-        if len(paths) == 0 or len(paths) == 1:
+        if len(components) == 1:
             break
-        path = paths.pop()
+        paths = []
+        for i in base:
+            for j in components:
+                for k in j:
+                    paths.append(nx.shortest_path(G, source=i, target=k, weight='weight'))
+        paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
+        path = paths[0]
         start = path[0]
         end = path[-1]
-        first = None
-        second = None
+        c = None
         for i in components:
-            if start in i:
-                first = i
-            if end in i:
-                second = i
-            if first and second:
+            if start in i or end in i:
+                c = i
+                components.remove(i)
                 break
-        if first and second:
-            components.remove(first)
-            components.remove(second)
-            for i in first:
-                nodes.add(i)
-            for i in second:
-                nodes.add(i)
-            for i in path:
-                nodes.add(i)
-    if components:
-        paths = []
-        for v in components[0]:
-            for i in nodes:
-                paths.append(nx.shortest_path(G, source=v, target=i, weight='weight'))
-        paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
-        for i in paths[0]:
-            nodes.add(i)
-    return nodes
+        if c:
+            part = set(base) | set(c) | set(path)
+            components.insert(0, list(part))
+        base = components.pop()
+    return components[0]
 
 
 def getTree(G, T):
     """
     G: original graph
     T: needed nodes 
-    
+
     return tree
     """
     copy = G.copy()
@@ -98,6 +90,7 @@ def getTree(G, T):
     return G
 
 def algo1(G):
+    print(len(G.nodes))
     T, baseNode = getLeastNode(G)
     if len(T) == 1:
         onlyone = nx.Graph()
@@ -105,4 +98,10 @@ def algo1(G):
         return onlyone
     components = getComponents(G, set(T))
     nodes = connectComponents(G, components, list(T))
+    cover = set()
+    for i in nodes:
+        for j in G[i]:
+            cover.add(j)
+    print(set(G.nodes) - cover)
+    print(len(cover))
     return getTree(G, nodes)
