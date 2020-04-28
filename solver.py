@@ -13,14 +13,13 @@ def draw(G):
     plt.show()
 
 def getLeastNode(G):
-    covered = {}
-    T, rest = [], []
+    covered = set()
+    T, rest = set(), set()
     for i in sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True):
         if i not in covered:
-            T.append(i)
+            T.add(i)
             for v in G[i]:
-                covered[v] = 1
-                rest.append(v)
+                covered.add(v)
     return T, rest
 
 def buildTree(G, T):
@@ -113,7 +112,30 @@ def solve2(G):
     
     fixed = []
     return tree
-    
+
+def getNeighbor(start, edges):
+    """
+    start(int) : the vertex index
+    edges(dictionary): the edges connect to other vertex
+    """
+    nb = set()
+    for i in edges:
+        if i[0] == start:
+            nb.add(i[1])
+        elif i[1] == start:
+            nb.add(i[0])
+    return nb
+
+def findDegrees(vertex, edges):
+    dic = dict()
+    for v in vertex:
+        deg = 0
+        for e in edges:
+            if v in e:
+                deg += 1
+        dic[v] = deg
+    return dic
+
 def solve3(G):
     n = len((G.nodes)) - 1
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
@@ -121,13 +143,101 @@ def solve3(G):
         onlyone = nx.Graph()
         onlyone.add_node(nodes[0])
         return onlyone
-    tree = nx.minimum_spanning_tree(G, weight='weight')
-    print(tree.nodes)
-    
-    
-    fixed = []
+    nb = set()
+    minDom = set()
+    vertex = set(nodes)
+    edges = set(list(G.edges))
+    start = nodes[0]
+    while vertex: 
+        dic = dict()
+        minDom.add(start)
+        vertex.discard(start)
+        nb = getNeighbor(start, edges)
+        if len(nb) == 0:
+            break
+        vertex = vertex - nb
+        if len(vertex) == 0:
+            break
+        remove = set()
+        for v in nb:
+            for s in edges:
+                if v in s:
+                    remove.add(s)
+        edges = edges - remove
+        if len(edges) == 1 or len(edges) == 2:
+            last = random.sample(vertex, 1)
+            minDom.add(last[0])
+            break
+        elif len(edges) == 0:
+            break
+        deg = findDegrees(vertex, edges)
+        start = sorted(deg, key=lambda x: deg[x], reverse=True)[0]
+    print(minDom)
+    draw(G)
     return tree
 
+import random
+def solve4(G):
+    gVertices = set(list(G.nodes))
+    gEdges = set(list(G.edges))
+    S = list()
+    degrees = dict()
+    connectedMinSet = []
+    while len(gVertices)!=0:
+        def findDegrees():
+            for vertex in gVertices:
+                deg = 0
+                for edge in gEdges:
+                    if vertex in edge:	
+                        deg = deg+1
+                    else: None
+                degrees[vertex] = deg
+            return degrees
+        findDegrees()
+        maxDegree = max(degrees.values())
+        for i in degrees:
+            if degrees.get(i) == maxDegree:
+                S.append(i)
+                maxvertex= i
+        nbrmaxvertex = set()
+        nbrmaxvertex.add(maxvertex)
+        gVerticesNew = set()
+        for edg in enumerate(gEdges):
+            
+            if edg[1][0]==maxvertex:
+                nbrmaxvertex.add(edg[1][1])
+            elif edg[1][1]==maxvertex:
+                nbrmaxvertex.add(edg[1][0])
+
+        connectedMinSet.append(nbrmaxvertex)
+        gVerticesNew = gVertices - nbrmaxvertex
+        gVertices=gVerticesNew
+        c = set(gEdges)
+        for v in c:
+            for e in c:
+                if maxvertex in gEdges:
+                    gEdges.remove(e)
+        degrees = dict()
+    print('\nMinimum independent dominating set in the graph = ',set(S))
+    q = 0
+    connq = set()
+    while q < len(S):
+        w = q+1
+        while w < len(S)-q and w < len(connectedMinSet) and q < len(connectedMinSet):
+            rs = set(connectedMinSet[q]).intersection(set(connectedMinSet[w]))
+            if len(rs) ==1:
+                connq |= rs
+            if len(rs) >1:
+                connq |= set(random.sample(rs,1))
+            w +=1
+        q +=1
+    connq |= set(S)
+    copy = G.copy()
+    for re in copy:
+        if re not in connq:
+            G.remove_node(re)
+    draw(G)
+    return G
 # Here's an example of how to run your solver.
 
 # Usage: python3 solver.py test.in
@@ -135,7 +245,7 @@ def solve3(G):
 if __name__ == '__main__':
     testing = True
     if testing:
-        path = 'inputs/large-160.in'
+        path = 'inputs/small-160.in'
         G = read_input_file(path)
         #draw(G)
         T = solve3(G)
