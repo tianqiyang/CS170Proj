@@ -1,16 +1,32 @@
 import networkx as nx
 import random
+from utils import is_valid_network
 
-def getLeastNode(G):
-    covered = set()
-    T = set()
-    for i in sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True):
-    #for i in sorted(list(G.nodes), key=lambda x: sum([G[i][x]['weight'] for i in G[x]]), reverse=True):
-        if i not in covered:
-            T.add(i)
-            for v in G[i]:
-                covered.add(v)
-    return T, covered
+def mwd(G, weight='weight'):
+    dom_set = set([])
+    cost_func = dict((node, nd.get(weight, 1)) for node, nd in G.nodes(data=True))
+    
+    vertices = set(G)
+    sets = dict((node, set([node]) | set(G[node])) for node in G)
+    def _cost(subset):
+        """ Our cost effectiveness function for sets given its weight
+        """
+        cost = sum(cost_func[node] for node in subset)
+        return cost / float(len(subset - dom_set))
+    while vertices:
+        # find the most cost effective set, and the vertex that for that set
+        dom_node, min_set = min(sets.items(),
+                                key=lambda x: (x[0], _cost(x[1])))
+        alpha = _cost(min_set)
+        # reduce the cost for the rest
+        for node in min_set - dom_set:
+            cost_func[node] = alpha
+        # add the node to the dominating set and reduce what we must cover
+        dom_set.add(dom_node)
+        del sets[dom_node]
+        vertices = vertices - min_set
+
+    return dom_set
 
 def getComponents(G, needConnect):
     """
@@ -23,12 +39,11 @@ def getComponents(G, needConnect):
     input: G, needConnect
     return: [[6], [1, 2, 3, 4, 5]]
     """
-    start = random.sample(needConnect, 1)[0]
+    start = random.choice(list(needConnect))
     components = []
     while needConnect:
         needConnect.discard(start)
         part = [start]
-        edges = set(G[start])
         queue = [start]
         while queue:
             start = queue.pop()
@@ -40,61 +55,97 @@ def getComponents(G, needConnect):
         components.append(part)
         if len(needConnect) == 0:
             break
-        start = random.sample(needConnect, 1)[0]
+        start = random.choice(list(needConnect))
     return components
 
-def connectComponents(G, components, T):
-    paths = []
-    base = components.pop()
-    while components:
-        if len(components) == 1:
-            break
-        paths = []
-        for i in base:
-            for j in components:
-                for k in j:
-                    paths.append(nx.shortest_path(G, source=i, target=k, weight='weight'))
-        paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
-        path = paths[0]
+def findAllPath(G, components):
+    pathDic = {}
+    for i in range(len(components)):
+        for j in range(i+1, len(components)):
+            A = components[i]
+            B = components[j]
+            for x in range(len(A)):
+                for y in range(len(B)):
+                    if A[x] != B[y]:
+                        pathDic[(A[x], B[y])] = nx.shortest_path(G, A[x], B[y])
+    return pathDic
+
+def sortPathHelper(x):
+    try:
+        path = pathDic[x]
+        return sum([G[path[i]][path[i+1]]['weight'] for i in range(0, len(path)-1)])
+    except:
+        return float('inf')
+
+def common_member(a, b): 
+    a = set(a) 
+    b = set(b) 
+    if len(a.intersection(b)) > 0: 
+        return True
+    return False
+
+def connectComponents(G, components):
+    components = sorted(components, key=lambda x: len(x), reverse=True)
+    pathDic = findAllPath(G, components)
+    while len(components) > 1:
+        path = sorted(pathDic, key=lambda x: sortPathHelper(x))[0]
+        first = second = None
         start = path[0]
-        end = path[-1]
-        c = None
+        end = path[1]
         for i in components:
-            if start in i or end in i:
-                c = i
-                components.remove(i)
+            if start in i:
+                first = i
+            elif end in i:
+                second = i
+            if first != None and second != None:
                 break
-        if c:
-            part = set(base) | set(c) | set(path)
-            components.insert(0, list(part))
-        base = components.pop()
+        newComponent = set()
+        components.remove(first)
+        for i in first:
+            newComponent.add(i)
+        components.remove(second)
+        for i in second:
+            newComponent.add(i)
+        for i in pathDic[path]:
+            newComponent.add(i)
+        if len(components) == 0:
+            return newComponent
+        components.insert(0, list(newComponent))
+        unique = True
+        while unique:
+            unique = False
+            for i in range(len(components)):
+                for j in range(i+1, len(components)):
+                    if components[i] != components[j] and common_member(components[i], components[j]):
+                        unique = True
+                        a = components[i]
+                        b = components[j]
+                        components.remove(a)
+                        components.remove(b)
+                        components.append(list(set(a) | set(b)))
+                        break
+        pathDic = findAllPath(G, components)
+
     return components[0]
 
-
-def getTree(G, T):
-    """
-    G: original graph
-    T: needed nodes 
-
-    return tree
-    """
-    copy = G.copy()
-    for re in copy:
-        if re not in T:
-            G.remove_node(re)
-    return G
+def buildTree(G, nodes):
+    newG = nx.Graph()
+    newG.add_nodes_from(nodes)
+    for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
+        if i[0] in nodes and i[1] in nodes:
+            newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
+    return nx.minimum_spanning_tree(newG, weight='weight')
 
 def algo1(G):
-    print(len(G.nodes))
-    T, baseNode = getLeastNode(G)
-    if len(T) == 1:
+    n = len((G.nodes)) - 1
+    nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
+    if len(G[nodes[0]]) == n:
         onlyone = nx.Graph()
-        onlyone.add_node(list(T)[0])
+        onlyone.add_node(nodes[0])
         return onlyone
-    components = getComponents(G, set(T))
-    nodes = connectComponents(G, components, list(T))
-    cover = set()
-    for i in nodes:
-        for j in G[i]:
-            cover.add(j)
-    return nx.minimum_spanning_tree(getTree(G, nodes))
+    domin = mwd(G, 'weight')
+    components = getComponents(G, domin)
+    nodes = connectComponents(G, components)
+    T = buildTree(G, nodes)
+    assert is_valid_network(G, T)
+    return T

@@ -4,31 +4,25 @@ import random
 def mwd(G, weight='weight'):
     dom_set = set([])
     cost_func = dict((node, nd.get(weight, 1)) for node, nd in G.nodes(data=True))
-    
     vertices = set(G)
     sets = dict((node, set([node]) | set(G[node])) for node in G)
-
     def _cost(subset):
         """ Our cost effectiveness function for sets given its weight
         """
         cost = sum(cost_func[node] for node in subset)
         return cost / float(len(subset - dom_set))
-
     while vertices:
         # find the most cost effective set, and the vertex that for that set
         dom_node, min_set = min(sets.items(),
                                 key=lambda x: (x[0], _cost(x[1])))
         alpha = _cost(min_set)
-
         # reduce the cost for the rest
         for node in min_set - dom_set:
             cost_func[node] = alpha
-
         # add the node to the dominating set and reduce what we must cover
         dom_set.add(dom_node)
         del sets[dom_node]
         vertices = vertices - min_set
-
     return dom_set
 
 def getComponents(G, needConnect):
@@ -44,10 +38,10 @@ def getComponents(G, needConnect):
     """
     start = random.choice(list(needConnect))
     components = []
+    edges = []
     while needConnect:
         needConnect.discard(start)
         part = [start]
-        edges = set(G[start])
         queue = [start]
         while queue:
             start = queue.pop()
@@ -82,21 +76,20 @@ def sortPathHelper(x):
         return float('inf')
 
 def common_member(a, b): 
-    a_set = set(a) 
-    b_set = set(b) 
-    if len(a_set.intersection(b_set)) > 0: 
-        return(True)  
-    return(False)
+    a = set(a) 
+    b = set(b) 
+    if len(a.intersection(b)) > 0: 
+        return True
+    return False
+
 def connectComponents(G, components):
     components = sorted(components, key=lambda x: len(x), reverse=True)
     pathDic = findAllPath(G, components)
     while len(components) > 1:
         path = sorted(pathDic, key=lambda x: sortPathHelper(x))[0]
-        #find which two components
         first = second = None
         start = path[0]
         end = path[1]
-        # print(path)
         for i in components:
             if start in i:
                 first = i
@@ -130,42 +123,30 @@ def connectComponents(G, components):
                         components.append(list(set(a) | set(b)))
                         break
         pathDic = findAllPath(G, components)
-
     return components[0]
 
-def getTree(G, T):
-    """
-    G: original graph
-    T: needed nodes 
-
-    return tree
-    """
-    copy = G.copy()
-    for re in copy:
-        if re not in T:
-            G.remove_node(re)
-    print(len(copy.nodes)-len(G))
-    return G
+def buildTree(G, nodes):
+    newG = nx.Graph()
+    newG.add_nodes_from(nodes)
+    for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
+        if i[0] in nodes and i[1] in nodes:
+            newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
+    return nx.minimum_spanning_tree(newG, weight='weight')
 
 def algo2(G):
+    """
+    base on algo 1, rewrite build tree
+    """
     n = len((G.nodes)) - 1
-    # print(len(G.nodes))
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
     if len(G[nodes[0]]) == n:
         onlyone = nx.Graph()
         onlyone.add_node(nodes[0])
         return onlyone
     domin = mwd(G, 'weight')
-    cover = set()
-    # print(len(domin))
-    for i in domin:
-        cover.add(i)
-        for j in G[i]:
-            cover.add(j)
-    assert (set(G.nodes) - cover) == set()
     components = getComponents(G, domin)
     nodes = connectComponents(G, components)
-    T = getTree(G, nodes)
-    
-    return nx.minimum_spanning_tree(T)
+    tree = buildTree(G, list(nodes))
+    assert nx.is_tree(tree)
+    return tree
     

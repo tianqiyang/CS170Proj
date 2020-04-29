@@ -1,5 +1,6 @@
 import networkx as nx
 from solve2 import algo2
+from utils import is_valid_network, average_pairwise_distance
 
 def algo3(G):
     #adding nodes after algo 2
