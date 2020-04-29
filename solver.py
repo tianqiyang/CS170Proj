@@ -8,9 +8,9 @@ from bestSolve import findTree
 # Usage: python3 solver.py
 
 if __name__ == '__main__':
-    testing = True
+    testing = False
     if testing:
-        path = 'small-1.in'
+        path = 'small-266.in'
         G = read_input_file('inputs/' + path)        
         print(path)
         T = findTree(G)
@@ -18,9 +18,9 @@ if __name__ == '__main__':
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
     else:
         files = [filename for root, dirs, file in os.walk("./inputs") for filename in file ]
-        for f in files:
+        for count, f in enumerate(files, 1):
             G = read_input_file("./inputs/" + f)
-            print(f)
+            print(count, f)
             T = findTree(G)
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))

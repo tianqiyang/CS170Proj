@@ -1,11 +1,12 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+from utils import is_valid_network, average_pairwise_distance
 from solve0 import algo0
 from solve1 import algo1
 from solve2 import algo2
 from solve3 import algo3
 from solve4 import algo4
-import matplotlib.pyplot as plt
-import networkx as nx
-from utils import is_valid_network, average_pairwise_distance
+from solve5 import algo5
 
 def draw(G):
     plt.subplot(121)
@@ -30,7 +31,7 @@ def findMin(li):
 
 def findTree(G):
     #draw(G)
-    func = [algo0, algo1, algo2, algo3, algo4]
+    func = [algo0, algo1, algo2, algo3, algo4, algo5]
     Ts = [i(G.copy()) for i in func]
     for t in range(len(Ts)):
         print("{} distance: {}".format(t, average_pairwise_distance(Ts[t])))

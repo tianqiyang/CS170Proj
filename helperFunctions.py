@@ -130,7 +130,7 @@ def buildTree(G, nodes):
     for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
         if i[0] in nodes and i[1] in nodes:
             newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
-    return nx.minimum_spanning_tree(newG, weight='weight')
+    return nx.minimum_spanning_tree(newG, weight='weight', algorithm='kruskal')
 
 def oneNode(G, nodes):
     onlyone = nx.Graph()
