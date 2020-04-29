@@ -23,19 +23,20 @@ def findMin(li):
 if __name__ == '__main__':
     testing = True
     if testing:
-        path = 'large-193.in'
+        path = 'large-22.in'
         G = read_input_file('inputs/' + path)
         T0 = nx.minimum_spanning_tree(G.copy(), weight='weight')
         T1 = algo1(G.copy())
         T2 = algo2(G.copy())
-        # T3 = algo3(G.copy())
-        # T4 = algo4(G.copy())
+        T3 = algo3(G.copy())
+        T4 = algo4(G.copy())
         print(path)
         print("0   distance: {}".format(average_pairwise_distance(T0)))
         print("1   distance: {}".format(average_pairwise_distance(T1)))
         print("2   distance: {}".format(average_pairwise_distance(T2)))
-        # print("3   distance: {}".format(average_pairwise_distance(T3)))
-        Ts = [T0, T1, T2]
+        print("3   distance: {}".format(average_pairwise_distance(T3)))
+        print("3   distance: {}".format(average_pairwise_distance(T3)))
+        Ts = [T0, T1, T2, T3]
         T = findMin(Ts)
         assert is_valid_network(G, T)
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
@@ -47,8 +48,8 @@ if __name__ == '__main__':
             T0 = nx.minimum_spanning_tree(G.copy(), weight='weight')
             T1 = algo1(G.copy())
             T2 = algo2(G.copy())
-            # T3 = algo3(G)
-            Ts = [T0, T1, T2]
+            T3 = algo3(G)
+            Ts = [T0, T1, T2, T3]
             T = findMin(Ts)
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
