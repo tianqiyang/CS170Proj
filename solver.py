@@ -3,35 +3,17 @@ from parse import read_input_file, write_output_file
 from utils import is_valid_network, average_pairwise_distance
 import sys
 import os
-import matplotlib.pyplot as plt
-from solve0 import algo0
-from solve1 import algo1
-from solve2 import algo2
-from solve3 import algo3
-from solve4 import algo4
-
-def draw(G):
-    plt.subplot(121)
-    nx.draw(G, with_labels=True, font_weight='bold')
-    plt.subplot(122)
-    nx.draw_shell(G, with_labels=True, font_weight='bold')
-    plt.show()
+from bestSolve import findTree
 
 # Usage: python3 solver.py
-def findMin(li):
-    return min(li, key=lambda x: average_pairwise_distance(x))
 
 if __name__ == '__main__':
-    testing = False
-    func = [algo0, algo1, algo2, algo3, algo4]
+    testing = True
     if testing:
-        path = 'small-7.in'
+        path = 'small-1.in'
         G = read_input_file('inputs/' + path)        
-        Ts = [i(G.copy()) for i in func]
         print(path)
-        for t in range(len(Ts)):
-            print("{} distance: {}".format(t, average_pairwise_distance(Ts[t])))
-        T = findMin(Ts)
+        T = findTree(G)
         assert is_valid_network(G, T)
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
     else:
@@ -39,10 +21,7 @@ if __name__ == '__main__':
         for f in files:
             G = read_input_file("./inputs/" + f)
             print(f)
-            Ts = [i(G.copy()) for i in func]
-            T = findMin(Ts)
-            for t in range(len(Ts)):
-                print("{}   distance: {}".format(t, average_pairwise_distance(Ts[t])))
+            T = findTree(G)
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
             write_output_file(T, f'out/{f.replace(".in", ".out")}')

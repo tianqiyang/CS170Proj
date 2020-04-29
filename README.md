@@ -15,3 +15,22 @@ When writing inputs/outputs:
 - Make sure you use the functions `write_input_file` and `write_output_file` provided
 - Run the functions `read_input_file` and `read_output_file` to validate your files before submitting!
   - These are the functions run by the autograder to validate submissions
+
+
+algo0:
+find mst
+
+algo1:
+find mds and connect them together.
+
+algo2:
+add some nodes to minimize value.
+
+algo3:
+remove some nodes to minimize value.
+
+algo4:
+repeatly remove and add nodes to minimize value.
+
+algo5:
+if mst has less value than other, try to remove some nodes or add nodes based on mst.

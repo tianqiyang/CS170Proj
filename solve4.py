@@ -1,5 +1,5 @@
 import networkx as nx
-from solve1 import algo1
+from solve2 import algo2
 from utils import is_valid_network, average_pairwise_distance
 from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree, addNodes, removeNodes
 
@@ -7,17 +7,17 @@ def algo4(G):
     """
     add notes to tree
     """
-    T = algo1(G)
+    T = algo2(G)
     used = set(list(T.nodes))
     if len(used) == 1:
         return T
-    for i in range(4):
-        allNodes = set(list(G.nodes))
+    allNodes = set(list(G.nodes))
+    for i in range(2):
         rest = allNodes - used
         newT = addNodes(G, T, rest)
         newT = buildTree(G, list(newT.nodes))
-        allNodes = set(list(newT.nodes))
-        rest = allNodes - used
         newT = removeNodes(G.copy(), newT)
         newT = buildTree(G.copy(), list(newT.nodes))
+        used = set(list(newT.nodes))
+    assert is_valid_network(G, newT)
     return newT

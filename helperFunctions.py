@@ -1,5 +1,4 @@
 import networkx as nx
-import random
 from utils import is_valid_network, average_pairwise_distance
 
 def mwd(G, weight='weight'):
@@ -37,7 +36,7 @@ def getComponents(G, needConnect):
     input: G, needConnect
     return: [[6], [1, 2, 3, 4, 5]]
     """
-    start = random.choice(list(needConnect))
+    start = sorted(list(needConnect), key=lambda x: len(G[x]), reverse=True)[0]
     components = []
     while needConnect:
         needConnect.discard(start)
@@ -53,7 +52,7 @@ def getComponents(G, needConnect):
         components.append(part)
         if len(needConnect) == 0:
             break
-        start = random.choice(list(needConnect))
+        start = sorted(list(needConnect), key=lambda x: len(G[x]), reverse=True)[0]
     return components
 
 def findAllPath(G, components):
@@ -140,8 +139,8 @@ def oneNode(G, nodes):
 
 def addNodes(G, tree, rest):
     cur = average_pairwise_distance(tree)
-    node = list(tree.nodes)
-    added = False
+    node = sorted(list(tree.nodes), key=lambda x: len(G[x]), reverse=True)
+    rest = sorted(list(rest), key=lambda x: len(G[x]), reverse=True)
     for i in rest:
         tree.add_node(i)
         for n in G[i]:
@@ -160,7 +159,7 @@ def addNodes(G, tree, rest):
     return tree
 
 def removeNodes(G, tree):
-    nodes = list(tree.nodes)
+    nodes = sorted(list(tree.nodes), key=lambda x: len(G[x]), reverse=True)
     cur = average_pairwise_distance(tree)
     li = list(nodes)
     for i in nodes:
