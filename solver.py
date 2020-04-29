@@ -26,23 +26,23 @@ def findMin(li):
     return min(dic.keys(), key=lambda x: dic[x])
 
 if __name__ == '__main__':
-    testing = True
+    testing = False
     if testing:
-        path = 'large-160.in'
+        path = 'small-1.in'
         G = read_input_file('inputs/' + path)
         T0 = nx.minimum_spanning_tree(G.copy(), weight='weight')
-        # T1 = algo1(G.copy())
+        T1 = algo1(G.copy())
         # T2 = algo2(G.copy())
         # T3 = algo3(G.copy())
         # T4 = algo4(G.copy())
         T5 = algo5(G.copy())
-        # print(path)
-        # print('Valid tree1:', is_valid_network(G, T1))
-        # print("0   distance: {}".format(average_pairwise_distance(T0)))
-        # print("1   distance: {}".format(average_pairwise_distance(T1)))
+        print(path)
+        print('Valid tree1:', is_valid_network(G, T1))
+        print("0   distance: {}".format(average_pairwise_distance(T0)))
+        print("1   distance: {}".format(average_pairwise_distance(T1)))
         # print("2   distance: {}".format(average_pairwise_distance(T2)))
         # print("3   distance: {}".format(average_pairwise_distance(T3)))
-        # print("5   distance: {}".format(average_pairwise_distance(T5)))
+        print("5   distance: {}".format(average_pairwise_distance(T5)))
         # Ts = [T0, T2, T3, T5]
         # T = findMin(Ts)
         # print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
@@ -50,16 +50,16 @@ if __name__ == '__main__':
         files = [filename for root, dirs, file in os.walk("./inputs") for filename in file ]
         for f in files:
             G = read_input_file("./inputs/" + f)
-            # print(f)
+            print(f)
             T0 = nx.minimum_spanning_tree(G, weight='weight')
-            # T1 = algo1(G)
-            # T2 = algo2(G)
-            # T3 = algo3(G)
+            T1 = algo1(G)
+            T2 = algo2(G)
+            T3 = algo3(G)
             T5 = algo5(G)
-        #     Ts = [T0, T2, T3]
-        #     T = findMin(Ts)
-        #     print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
-        #     assert is_valid_network(G, T)
-        #     write_output_file(T, f'out/{f.replace(".in", ".out")}')
-        # files = [filename for root, dirs, file in os.walk("./out") for filename in file ]
+            Ts = [T0, T2, T3]
+            T = findMin(Ts)
+            print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
+            assert is_valid_network(G, T5)
+            write_output_file(T, f'out/{f.replace(".in", ".out")}')
+        files = [filename for root, dirs, file in os.walk("./out") for filename in file ]
         print(len(files))

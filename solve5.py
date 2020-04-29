@@ -91,11 +91,8 @@ def common_member(a, b):
 def connectComponents(G, components):
     components = sorted(components, key=lambda x: len(x), reverse=True)
     pathDic = findAllPath(G, components)
-    edges = []
     while len(components) > 1:
         path = sorted(pathDic, key=lambda x: sortPathHelper(x))[0]
-        for i in range(len(path)-1):
-            edges.append([path[i], path[i+1]])
         first = second = None
         start = path[0]
         end = path[1]
@@ -132,17 +129,15 @@ def connectComponents(G, components):
                         components.append(list(set(a) | set(b)))
                         break
         pathDic = findAllPath(G, components)
-    return components[0], edges
+    return components[0]
 
-def buildTree(G, nodes, edges, components):
+def buildTree(G, nodes):
     newG = nx.Graph()
     newG.add_nodes_from(nodes)
-    newG.add_edges_from(edges)
-    for i in G.edges:
-        print(i)
-        
-        
-    return newG
+    for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
+        if i[0] in nodes and i[1] in nodes:
+            newG.add_edge(i[0], i[1])
+    return nx.minimum_spanning_tree(newG)
     
 def algo5(G):
     #add build tree
@@ -159,6 +154,8 @@ def algo5(G):
         for j in G[i]:
             cover.add(j)
     components = getComponents(G, domin)
-    nodes, edges = connectComponents(G, components)
-    return buildTree(G, list(nodes), edges, components)
+    nodes = connectComponents(G, components)
+    tree = buildTree(G, list(nodes))
+    assert nx.is_tree(tree)
+    return tree
     
