@@ -1,16 +1,11 @@
 import networkx as nx
-from solve2 import algo2
+from solve1 import algo1
 from utils import is_valid_network, average_pairwise_distance
-
-
-
-
-
-
+from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree, addNodes, removeNodes
 
 def algo4(G):
     #adding nodes after algo 2
-    T = algo2(G.copy())
+    T = algo1(G.copy())
     used = set(list(T.nodes))
     if len(used) == 1:
         return T
