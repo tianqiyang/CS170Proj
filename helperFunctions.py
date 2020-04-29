@@ -1,6 +1,6 @@
 import networkx as nx
 import random
-
+from utils import is_valid_network, average_pairwise_distance
 
 def mwd(G, weight='weight'):
     dom_set = set([])

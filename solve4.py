@@ -4,6 +4,9 @@ from utils import is_valid_network, average_pairwise_distance
 from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree, addNodes, removeNodes
 
 def algo4(G):
+    """
+    add notes to tree
+    """
     T = algo1(G)
     used = set(list(T.nodes))
     if len(used) == 1:
@@ -13,4 +16,8 @@ def algo4(G):
         rest = allNodes - used
         newT = addNodes(G, T, rest)
         newT = buildTree(G, list(newT.nodes))
+        allNodes = set(list(newT.nodes))
+        rest = allNodes - used
+        newT = removeNodes(G.copy(), newT)
+        newT = buildTree(G.copy(), list(newT.nodes))
     return newT

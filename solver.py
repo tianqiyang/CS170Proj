@@ -22,15 +22,15 @@ def findMin(li):
     return min(li, key=lambda x: average_pairwise_distance(x))
 
 if __name__ == '__main__':
-    testing = True
+    testing = False
     func = [algo0, algo1, algo2, algo3, algo4]
     if testing:
-        path = 'medium-258.in'
+        path = 'small-7.in'
         G = read_input_file('inputs/' + path)        
         Ts = [i(G.copy()) for i in func]
         print(path)
         for t in range(len(Ts)):
-            print("{}   distance: {}".format(t, average_pairwise_distance(Ts[t])))
+            print("{} distance: {}".format(t, average_pairwise_distance(Ts[t])))
         T = findMin(Ts)
         assert is_valid_network(G, T)
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
