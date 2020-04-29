@@ -31,16 +31,29 @@ def buildTree(G, nodes):
             newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
     return nx.minimum_spanning_tree(newG, weight='weight')
 
+def removeNodes(G, tree):
+    nodes = list(tree.nodes)
+    cur = average_pairwise_distance(tree)
+    li = list(nodes)
+    for i in nodes:
+        li.remove(i)
+        temp = buildTree(G.copy(), li)
+        if len(temp.nodes) > 0 and is_valid_network(G, temp) and average_pairwise_distance(temp) < cur:
+            cur = average_pairwise_distance(temp)
+        else:
+            li.append(i)
+    return buildTree(G, li)
+
 def algo4(G):
     #adding nodes after algo 2
-    T = algo2(G)
+    T = algo2(G.copy())
     used = set(list(T.nodes))
     if len(used) == 1:
         return T
     allNodes = set(list(G.nodes))
     rest = allNodes - used
-    newT = addNodes(G, T, rest)
-    newT = buildTree(G, list(newT.nodes))
+    newT = removeNodes(G.copy(), T)
+    newT = buildTree(G.copy(), list(newT.nodes))
     assert is_valid_network(G, newT)
     return newT
-    
+

@@ -4,10 +4,12 @@ from utils import is_valid_network, average_pairwise_distance
 import sys
 import os
 import matplotlib.pyplot as plt
+from solve0 import algo0
 from solve1 import algo1
 from solve2 import algo2
 from solve3 import algo3
 from solve4 import algo4
+from solve5 import algo5
 
 def draw(G):
     plt.subplot(121)
@@ -21,22 +23,15 @@ def findMin(li):
     return min(li, key=lambda x: average_pairwise_distance(x))
 
 if __name__ == '__main__':
-    testing = True
+    testing = False
+    func = [algo0, algo1, algo2, algo3, algo4, algo5]
     if testing:
-        path = 'large-22.in'
-        G = read_input_file('inputs/' + path)
-        T0 = nx.minimum_spanning_tree(G.copy(), weight='weight')
-        T1 = algo1(G.copy())
-        T2 = algo2(G.copy())
-        T3 = algo3(G.copy())
-        T4 = algo4(G.copy())
+        path = 'medium-258.in'
+        G = read_input_file('inputs/' + path)        
+        Ts = [i(G.copy()) for i in func]
         print(path)
-        print("0   distance: {}".format(average_pairwise_distance(T0)))
-        print("1   distance: {}".format(average_pairwise_distance(T1)))
-        print("2   distance: {}".format(average_pairwise_distance(T2)))
-        print("3   distance: {}".format(average_pairwise_distance(T3)))
-        print("3   distance: {}".format(average_pairwise_distance(T3)))
-        Ts = [T0, T1, T2, T3]
+        for t in range(len(Ts)):
+            print("{}   distance: {}".format(t, average_pairwise_distance(Ts[t])))
         T = findMin(Ts)
         assert is_valid_network(G, T)
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
@@ -45,12 +40,10 @@ if __name__ == '__main__':
         for f in files:
             G = read_input_file("./inputs/" + f)
             print(f)
-            T0 = nx.minimum_spanning_tree(G.copy(), weight='weight')
-            T1 = algo1(G.copy())
-            T2 = algo2(G.copy())
-            T3 = algo3(G)
-            Ts = [T0, T1, T2, T3]
+            Ts = [i(G.copy()) for i in func]
             T = findMin(Ts)
+            for t in range(len(Ts)):
+                print("{}   distance: {}".format(t, average_pairwise_distance(Ts[t])))
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
             write_output_file(T, f'out/{f.replace(".in", ".out")}')
