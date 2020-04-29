@@ -45,11 +45,6 @@ def getComponents(G, needConnect):
 
 def connectComponents(G, components, T):
     paths = []
-    # f
-    #     for j in range(i+1, len(T)):
-    #         paths.append(nx.shortest_path(G, source=T[i], target=T[j], weight='weight'))
-    # paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
-    # nodes = set()
     base = components.pop()
     while components:
         if len(components) == 1:
@@ -94,7 +89,7 @@ def algo1(G):
     T, baseNode = getLeastNode(G)
     if len(T) == 1:
         onlyone = nx.Graph()
-        onlyone.add_node(T[0])
+        onlyone.add_node(list(T)[0])
         return onlyone
     components = getComponents(G, set(T))
     nodes = connectComponents(G, components, list(T))
@@ -102,6 +97,4 @@ def algo1(G):
     for i in nodes:
         for j in G[i]:
             cover.add(j)
-    print(set(G.nodes) - cover)
-    print(len(cover))
-    return getTree(G, nodes)
+    return nx.minimum_spanning_tree(getTree(G, nodes))

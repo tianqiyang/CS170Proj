@@ -44,10 +44,10 @@ def getComponents(G, needConnect):
     """
     start = random.choice(list(needConnect))
     components = []
+    edges = []
     while needConnect:
         needConnect.discard(start)
         part = [start]
-        edges = set(G[start])
         queue = [start]
         while queue:
             start = queue.pop()
@@ -82,21 +82,23 @@ def sortPathHelper(x):
         return float('inf')
 
 def common_member(a, b): 
-    a_set = set(a) 
-    b_set = set(b) 
-    if len(a_set.intersection(b_set)) > 0: 
-        return(True)  
-    return(False)
+    a = set(a) 
+    b = set(b) 
+    if len(a.intersection(b)) > 0: 
+        return True
+    return False
+
 def connectComponents(G, components):
     components = sorted(components, key=lambda x: len(x), reverse=True)
     pathDic = findAllPath(G, components)
+    edges = []
     while len(components) > 1:
         path = sorted(pathDic, key=lambda x: sortPathHelper(x))[0]
-        #find which two components
+        for i in range(len(path)-1):
+            edges.append([path[i], path[i+1]])
         first = second = None
         start = path[0]
         end = path[1]
-        # print(path)
         for i in components:
             if start in i:
                 first = i
@@ -130,26 +132,21 @@ def connectComponents(G, components):
                         components.append(list(set(a) | set(b)))
                         break
         pathDic = findAllPath(G, components)
+    return components[0], edges
 
-    return components[0]
-
-def getTree(G, T):
-    """
-    G: original graph
-    T: needed nodes 
-
-    return tree
-    """
-    copy = G.copy()
-    for re in copy:
-        if re not in T:
-            G.remove_node(re)
-    print(len(copy.nodes)-len(G))
-    return G
-
-def algo2(G):
+def buildTree(G, nodes, edges, components):
+    newG = nx.Graph()
+    newG.add_nodes_from(nodes)
+    newG.add_edges_from(edges)
+    for i in G.edges:
+        print(i)
+        
+        
+    return newG
+    
+def algo5(G):
+    #add build tree
     n = len((G.nodes)) - 1
-    # print(len(G.nodes))
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
     if len(G[nodes[0]]) == n:
         onlyone = nx.Graph()
@@ -157,15 +154,11 @@ def algo2(G):
         return onlyone
     domin = mwd(G, 'weight')
     cover = set()
-    # print(len(domin))
     for i in domin:
         cover.add(i)
         for j in G[i]:
             cover.add(j)
-    assert (set(G.nodes) - cover) == set()
     components = getComponents(G, domin)
-    nodes = connectComponents(G, components)
-    T = getTree(G, nodes)
-    
-    return nx.minimum_spanning_tree(T)
+    nodes, edges = connectComponents(G, components)
+    return buildTree(G, list(nodes), edges, components)
     
