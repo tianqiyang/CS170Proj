@@ -9,7 +9,6 @@ from solve1 import algo1
 from solve2 import algo2
 from solve3 import algo3
 from solve4 import algo4
-from solve5 import algo5
 
 def draw(G):
     plt.subplot(121)
@@ -24,7 +23,7 @@ def findMin(li):
 
 if __name__ == '__main__':
     testing = True
-    func = [algo0, algo1, algo2, algo3, algo4, algo5]
+    func = [algo0, algo1, algo2, algo3, algo4]
     if testing:
         path = 'medium-258.in'
         G = read_input_file('inputs/' + path)        
