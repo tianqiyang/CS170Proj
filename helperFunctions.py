@@ -5,7 +5,6 @@ import random
 def mwd(G, weight='weight'):
     dom_set = set([])
     cost_func = dict((node, nd.get(weight, 1)) for node, nd in G.nodes(data=True))
-    
     vertices = set(G)
     sets = dict((node, set([node]) | set(G[node])) for node in G)
     def _cost(subset):
@@ -138,3 +137,37 @@ def oneNode(G, nodes):
     onlyone = nx.Graph()
     onlyone.add_node(nodes[0])
     return onlyone
+
+def addNodes(G, tree, rest):
+    cur = average_pairwise_distance(tree)
+    node = list(tree.nodes)
+    added = False
+    for i in rest:
+        tree.add_node(i)
+        for n in G[i]:
+            if n in node:
+                tree.add_edge(i, n)
+                tree[i][n]['weight'] = G[i][n]['weight']
+        tree = nx.minimum_spanning_tree(tree, weight='weight')
+        if is_valid_network(G, tree):
+            newdis = average_pairwise_distance(tree)
+            if newdis > cur:
+                tree.remove_node(i)
+            else:
+                cur = min(cur, newdis)
+        else:
+            tree.remove_node(i)
+    return tree
+
+def removeNodes(G, tree):
+    nodes = list(tree.nodes)
+    cur = average_pairwise_distance(tree)
+    li = list(nodes)
+    for i in nodes:
+        li.remove(i)
+        temp = buildTree(G.copy(), li)
+        if len(temp.nodes) > 0 and is_valid_network(G, temp) and average_pairwise_distance(temp) < cur:
+            cur = average_pairwise_distance(temp)
+        else:
+            li.append(i)
+    return buildTree(G, li)

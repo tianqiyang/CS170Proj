@@ -23,7 +23,7 @@ def findMin(li):
     return min(li, key=lambda x: average_pairwise_distance(x))
 
 if __name__ == '__main__':
-    testing = False
+    testing = True
     func = [algo0, algo1, algo2, algo3, algo4, algo5]
     if testing:
         path = 'medium-258.in'

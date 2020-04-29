@@ -1,5 +1,3 @@
-import networkx as nx
-import random
 from utils import is_valid_network
 from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree
 
