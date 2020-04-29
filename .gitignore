@@ -5,3 +5,6 @@
 
 #description
 spec.pdf
+
+out/*
+inputs/*
