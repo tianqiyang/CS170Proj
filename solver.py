@@ -10,7 +10,7 @@ from bestSolve import findTree
 if __name__ == '__main__':
     testing = False
     if testing:
-        path = 'small-266.in'
+        path = 'medium-125.in'
         G = read_input_file('inputs/' + path)        
         print(path)
         T = findTree(G)
@@ -25,5 +25,7 @@ if __name__ == '__main__':
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
             write_output_file(T, f'out/{f.replace(".in", ".out")}')
+            if count == 10:
+                break
         files = [filename for root, dirs, file in os.walk("./out") for filename in file ]
         print(len(files))

@@ -15,8 +15,6 @@ def algo4(G):
     for i in range(2):
         used = set(list(T.nodes))
         newT = addNodes(G, T, allNodes -used)
-        newT = buildTree(G, list(newT.nodes))
         newT = removeNodes(G.copy(), newT)
-        newT = buildTree(G.copy(), list(newT.nodes))
     assert is_valid_network(G, newT)
     return newT

@@ -7,6 +7,8 @@ from solve2 import algo2
 from solve3 import algo3
 from solve4 import algo4
 from solve5 import algo5
+from solve6 import algo6
+from solve7 import algo7
 
 def draw(G):
     plt.subplot(121)
@@ -31,10 +33,14 @@ def findMin(li):
 
 def findTree(G):
     #draw(G)
-    func = [algo0, algo1, algo2, algo3, algo4, algo5]
-    Ts = [i(G.copy()) for i in func]
-    for t in range(len(Ts)):
-        print("{} distance: {}".format(t, average_pairwise_distance(Ts[t])))
+    func = [algo0, algo1, algo2, algo3, algo4, algo5, algo6, algo7]
+    Ts = []
+    for t in range(len(func)):
+        Ts.append(func[t](G.copy()))
+        value = average_pairwise_distance(Ts[t])
+        print("{} distance: {}".format(t,value))
+        if value == 0:
+            return Ts[-1]
     T = findMin(Ts)
     #draw2(G, T)
     return T

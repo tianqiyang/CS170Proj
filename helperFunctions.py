@@ -130,7 +130,13 @@ def buildTree(G, nodes):
     for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
         if i[0] in nodes and i[1] in nodes:
             newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
-    return nx.minimum_spanning_tree(newG, weight='weight', algorithm='kruskal')
+    newG = nx.minimum_spanning_tree(newG, weight='weight', algorithm='kruskal')
+    for i in sorted(list(newG.nodes), key=lambda x: len(G[x])):
+        if len(G[i]) == 1:
+            newG.remove_node(i)
+        if len(G[i]) > 1:
+            break
+    return newG
 
 def oneNode(G, nodes):
     onlyone = nx.Graph()
@@ -138,7 +144,9 @@ def oneNode(G, nodes):
     return onlyone
 
 def addNodes(G, tree, rest):
-    cur = average_pairwise_distance(tree)
+    cur = float('inf')
+    if is_valid_network(G, tree):
+        cur = average_pairwise_distance(tree)
     node = sorted(list(tree.nodes), key=lambda x: len(G[x]), reverse=True)
     rest = sorted(list(rest), key=lambda x: len(G[x]), reverse=True)
     for i in rest:
@@ -160,7 +168,9 @@ def addNodes(G, tree, rest):
 
 def removeNodes(G, tree):
     nodes = sorted(list(tree.nodes), key=lambda x: len(G[x]), reverse=True)
-    cur = average_pairwise_distance(tree)
+    cur = float('inf')
+    if is_valid_network(G, tree):
+        cur = average_pairwise_distance(tree)
     li = list(nodes)
     for i in nodes:
         li.remove(i)
