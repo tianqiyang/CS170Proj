@@ -19,15 +19,16 @@ def draw(G):
 # Usage: python3 solver.py
 
 if __name__ == '__main__':
-    testing = False
+    testing = True
     if testing:
-        path = 'large-160.in'
+        path = 'small-160.in'
         G = read_input_file('inputs/' + path)
         #T1 = algo1(G.copy())
         T2 = algo2(G.copy())
         # T3 = algo3(G.copy())
         # T4 = algo4(G.copy())
         print(path)
+        draw(T2)
         # print('Valid tree1:', is_valid_network(G, T1))
         print("0   distance: {}".format(average_pairwise_distance(nx.minimum_spanning_tree(G, weight='weight'))))
        # print("1   distance: {}".format(average_pairwise_distance(T1)))

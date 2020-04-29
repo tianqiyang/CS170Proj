@@ -74,53 +74,74 @@ def getComponents(G, needConnect):
         start = random.choice(list(needConnect))
     return components
 
-def connectComponents(G, components, T):
-    paths = []
-    base = components.pop()
-    while components:
-        if len(components) == 1:
-            break
-        paths = []
-        for i in base:
-            for j in components:
-                for k in j:
-                    paths.append(nx.shortest_path(G, source=i, target=k, weight='weight'))
-        paths = sorted(paths, key=lambda x: sum([G[x[i]][x[i+1]]['weight'] for i in range(0, len(x)-1)]))
-        path = paths[0]
+def findAllPath(G, components):
+    pathDic = {}
+    for i in range(len(components)):
+        for j in range(i+1, len(components)):
+            A = components[i]
+            B = components[j]
+            for x in range(len(A)):
+                for y in range(len(B)):
+                    pathDic[(A[x], B[y])] = nx.shortest_path(G, A[x], B[y])
+    return pathDic
+
+def sortPathHelper(x):
+    try:
+        path = pathDic[x]
+        return sum([G[path[i]][path[i+1]]['weight'] for i in range(0, len(path)-1)])
+    except:
+        return float('inf')
+
+def connectComponents(G, components):
+    components = sorted(components, key=lambda x: len(x), reverse=True)
+    pathDic = findAllPath(G, components)
+    while len(components) > 1:
+        path = sorted(pathDic, key=lambda x: sortPathHelper(x))[0]
+        #find which two components
+        first = second = None
         start = path[0]
-        end = path[-1]
-        c = None
+        end = path[1]
         for i in components:
-            if start in i or end in i:
-                c = i
-                components.remove(i)
+            if start in i:
+                first = i
+            elif end in i:
+                second = i
+            if first != None and second != None:
                 break
-        if c:
-            part = set(base) | set(c) | set(path)
-            components.insert(0, list(part))
-        base = components.pop()
+        components.remove(first)
+        components.remove(second)
+        newComponent = set()
+        for i in first:
+            newComponent.add(i)
+        for i in second:
+            newComponent.add(i)
+        for i in pathDic[path]:
+            newComponent.add(i)
+        if len(components) == 0:
+            return newComponent
+        components.insert(0, list(newComponent))
+        pathDic = findAllPath(G, components)
+
     return components[0]
 
 def algo2(G):
     n = len((G.nodes)) - 1
+    print(len(G.nodes))
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
     if len(G[nodes[0]]) == n:
         onlyone = nx.Graph()
         onlyone.add_node(nodes[0])
         return onlyone
-    tree = mwd(G, 'weight')
+    domin = mwd(G, 'weight')
     cover = set()
-    for i in tree:
+    print(len(domin))
+    for i in domin:
         cover.add(i)
         for j in G[i]:
             cover.add(j)
     assert (set(G.nodes) - cover) == set()
-    
-    
-    
-    # components = getComponents(G, tree)
-    # print(components)
-    # nodes = connectComponents(G, components, list(tree))
-    # print(nodes)
+
+    components = getComponents(G, domin)
+    nodes = connectComponents(G, components)
     return getTree(G, nodes)
     
