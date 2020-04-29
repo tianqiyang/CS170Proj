@@ -1,5 +1,6 @@
 import networkx as nx
 import random
+
 def mwd(G, weight='weight'):
     dom_set = set([])
     cost_func = dict((node, nd.get(weight, 1)) for node, nd in G.nodes(data=True))
@@ -82,7 +83,8 @@ def findAllPath(G, components):
             B = components[j]
             for x in range(len(A)):
                 for y in range(len(B)):
-                    pathDic[(A[x], B[y])] = nx.shortest_path(G, A[x], B[y])
+                    if A[x] != B[y]:
+                        pathDic[(A[x], B[y])] = nx.shortest_path(G, A[x], B[y])
     return pathDic
 
 def sortPathHelper(x):
@@ -92,6 +94,12 @@ def sortPathHelper(x):
     except:
         return float('inf')
 
+def common_member(a, b): 
+    a_set = set(a) 
+    b_set = set(b) 
+    if len(a_set.intersection(b_set)) > 0: 
+        return(True)  
+    return(False)
 def connectComponents(G, components):
     components = sorted(components, key=lambda x: len(x), reverse=True)
     pathDic = findAllPath(G, components)
@@ -101,6 +109,7 @@ def connectComponents(G, components):
         first = second = None
         start = path[0]
         end = path[1]
+        # print(path)
         for i in components:
             if start in i:
                 first = i
@@ -108,11 +117,11 @@ def connectComponents(G, components):
                 second = i
             if first != None and second != None:
                 break
-        components.remove(first)
-        components.remove(second)
         newComponent = set()
+        components.remove(first)
         for i in first:
             newComponent.add(i)
+        components.remove(second)
         for i in second:
             newComponent.add(i)
         for i in pathDic[path]:
@@ -120,13 +129,26 @@ def connectComponents(G, components):
         if len(components) == 0:
             return newComponent
         components.insert(0, list(newComponent))
+        unique = True
+        while unique:
+            unique = False
+            for i in range(len(components)):
+                for j in range(i+1, len(components)):
+                    if components[i] != components[j] and common_member(components[i], components[j]):
+                        unique = True
+                        a = components[i]
+                        b = components[j]
+                        components.remove(a)
+                        components.remove(b)
+                        components.append(list(set(a) | set(b)))
+                        break
         pathDic = findAllPath(G, components)
 
     return components[0]
 
 def algo2(G):
     n = len((G.nodes)) - 1
-    print(len(G.nodes))
+    # print(len(G.nodes))
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
     if len(G[nodes[0]]) == n:
         onlyone = nx.Graph()
@@ -134,14 +156,15 @@ def algo2(G):
         return onlyone
     domin = mwd(G, 'weight')
     cover = set()
-    print(len(domin))
+    # print(len(domin))
     for i in domin:
         cover.add(i)
         for j in G[i]:
             cover.add(j)
     assert (set(G.nodes) - cover) == set()
-
     components = getComponents(G, domin)
     nodes = connectComponents(G, components)
-    return getTree(G, nodes)
+    T = getTree(G, nodes)
+    #assert nx.is_tree(T)
+    return nx.minimum_spanning_tree(T)
     
