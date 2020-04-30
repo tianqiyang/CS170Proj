@@ -51,5 +51,6 @@ def algo7(G):
         T = addNodes(G, T, allNodes - used)
         T = removeNodes(G, T)
         count -= 1
-    assert is_valid_network(G, T)
+    if not is_valid_network(G, T):
+        return algo6(G.copy())
     return T

@@ -32,7 +32,6 @@ def findMin(li):
     return min(li, key=lambda x: average_pairwise_distance(x))
 
 def findTree(G):
-    #draw(G)
     func = [algo0, algo1, algo2, algo3, algo4, algo5, algo6, algo7]
     Ts = []
     for t in range(len(func)):
@@ -40,7 +39,6 @@ def findTree(G):
         value = average_pairwise_distance(Ts[t])
         print("{} distance: {}".format(t,value))
         if value == 0:
-            return Ts[-1]
+            return Ts[-1], t
     T = findMin(Ts)
-    #draw2(G, T)
-    return T
+    return T, Ts.index(T)

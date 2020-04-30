@@ -148,8 +148,7 @@ def addNodes(G, tree, rest):
     if is_valid_network(G, tree):
         cur = average_pairwise_distance(tree)
     node = sorted(list(tree.nodes), key=lambda x: len(G[x]), reverse=True)
-    rest = sorted(list(rest), key=lambda x: len(G[x]), reverse=True)
-    for i in rest:
+    for i in sorted(list(rest), key=lambda x: len(G[x]), reverse=True):
         tree.add_node(i)
         for n in G[i]:
             if n in node:
