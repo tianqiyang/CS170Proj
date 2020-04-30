@@ -10,7 +10,7 @@ from bestSolve import findTree
 if __name__ == '__main__':
     testing = False
     if testing:
-        path = 'medium-27.in'
+        path = 'small-145.in'#
         G = read_input_file('inputs/' + path)        
         print(path)
         T, c = findTree(G)
