@@ -21,13 +21,14 @@ def draw2(G, T):
     plt.show()
 
 def mwd(G, weight='weight'):
+    """This is source code of network.(min_weighted_dominating_set)
+    """
     dom_set = set([])
     cost_func = dict((node, nd.get(weight, 1)) for node, nd in G.nodes(data=True))
     vertices = set(G)
     sets = dict((node, set([node]) | set(G[node])) for node in G)
     def _cost(subset):
-        """ Our cost effectiveness function for sets given its weight
-        """
+        """Our cost effectiveness function for sets given its weight."""
         cost = sum(cost_func[node] for node in subset)
         return cost / float(len(subset - dom_set))
     while vertices:
@@ -92,7 +93,7 @@ def sortPathHelper(x):
     except:
         return float('inf')
 
-def common_member(a, b): 
+def common_member(a, b):
     return len(set(a).intersection(set(b) )) > 0
 
 def connectComponents(G, components):
@@ -193,3 +194,36 @@ def removeNodes(G, tree):
         else:
             li.append(i)
     return buildTree(G, li)
+
+def build(G, nodes):
+    newG = nx.Graph()
+    nodes = sorted(list(nodes), key=lambda x: len(G[x]))
+    if nodes:
+        newG.add_node(nodes.pop(0))
+    if nodes:
+        newG.add_node(nodes.pop(0))
+    cur = float('inf')
+    if is_valid_network(G, newG):
+        cur = average_pairwise_distance(newG)
+    while nodes or is_valid_network(G, newG):
+        for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
+            if i[0] in nodes and i[1] in nodes:
+                newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
+        temp = nx.minimum_spanning_tree(newG, weight='weight', algorithm='kruskal')
+        if is_valid_network(G, temp):
+            thisValue = average_pairwise_distance(newG)
+            if thisValue < cur:
+                cur = thisValue
+                newG = temp
+        if nodes:
+            newG.add_node(nodes.pop(0))
+    for i in sorted(G.edges, key=lambda x: G[x[0]][x[1]]['weight']):
+        if i[0] in nodes and i[1] in nodes:
+            newG.add_edge(i[0], i[1], weight=G[i[0]][i[1]]['weight'])
+    newG = nx.minimum_spanning_tree(newG, weight='weight', algorithm='kruskal')
+    for i in sorted(list(newG.nodes), key=lambda x: len(G[x])):
+        if len(G[i]) == 1:
+            newG.remove_node(i)
+        if len(G[i]) > 1:
+            break
+    return newG

@@ -43,9 +43,9 @@ def findTree(G):
     return T, Ts.index(T)
 
 if __name__ == '__main__':
-    testing = False
+    testing = True
     if testing:
-        path = 'large-2.in'#
+        path = 'small-10.in'
         G = read_input_file('inputs/' + path)        
         print(path)
         T, c = findTree(G)

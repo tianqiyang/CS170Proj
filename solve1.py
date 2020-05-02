@@ -6,7 +6,7 @@ def algo1(G):
     find the mdcs and connect them as components.
     Then find the min cost to connect components.
     """
-    domin = mwd(G, 'weight')
+    domin = mwd(G)
     components = getComponents(G, domin)
     nodes = connectComponents(G, components)
     T = buildTree(G, nodes)

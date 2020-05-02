@@ -8,7 +8,6 @@ def algo3(G):
     remove notes from previous algotirm.
     """
     T = algo1(G.copy())
-    rest = set(list(G.nodes)) - set(list(T.nodes))
     newT = removeNodes(G.copy(), T)
     newT = buildTree(G.copy(), list(newT.nodes))
     assert is_valid_network(G, newT)

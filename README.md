@@ -16,7 +16,7 @@ When writing inputs/outputs:
 - Run the functions `read_input_file` and `read_output_file` to validate your files before submitting!
   - These are the functions run by the autograder to validate submissions
 
-### Running the tests
+### Running the code
 
 Usage: 
 > python3 solver.py

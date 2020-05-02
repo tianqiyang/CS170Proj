@@ -9,7 +9,7 @@ def algo4(G):
     """
     T = algo2(G)
     allNodes = set(list(G.nodes))
-    for i in range(2):
+    for _ in range(2):
         used = set(list(T.nodes))
         newT = addNodes(G, T, allNodes - used)
         newT = removeNodes(G.copy(), newT)

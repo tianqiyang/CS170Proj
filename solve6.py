@@ -9,8 +9,9 @@ def algo6(G):
     T = algo5(G.copy())
     T = removeNodes(G, T)
     count = 3
+    allNode = set(list(G.nodes))
     while not is_valid_network(G, T) and count:
-        T = addNodes(G, T, allNodes - used)
+        T = addNodes(G, T, allNode - set(list(T.nodes)))
         T = removeNodes(G, T)
         count -= 1
     return T
