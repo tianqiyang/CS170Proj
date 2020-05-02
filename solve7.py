@@ -1,8 +1,7 @@
 from solve6 import algo6
 import networkx as nx
 from utils import is_valid_network, average_pairwise_distance
-from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree, addNodes, removeNodes
-
+from helperFunctions import buildTree, addNodes, removeNodes
 
 def build(G, nodes):
     newG = nx.Graph()
@@ -38,10 +37,13 @@ def build(G, nodes):
     return newG
 
 def algo7(G):
+    """
+    build tree in different way.
+    """
     T = algo6(G.copy())
     allNodes = set(list(G.nodes))
     for _ in range(1):
-        used = set(list(T.nodes))
+        used = set(list(T.nodes))s
         T = addNodes(G, T, allNodes - used)
         T = build(G, list(T.nodes))
         T = removeNodes(G, T)

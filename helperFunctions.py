@@ -1,5 +1,24 @@
 import networkx as nx
 from utils import is_valid_network, average_pairwise_distance
+import matplotlib.pyplot as plt
+
+def draw(G):
+    plt.subplot(121)
+    nx.draw(G, with_labels=True, font_weight='bold')
+    plt.subplot(122)
+    nx.draw_shell(G, with_labels=True, font_weight='bold')
+    plt.show()
+
+def draw2(G, T):
+    plt.subplot(221)
+    nx.draw(G, with_labels=True, font_weight='bold')
+    plt.subplot(222)
+    nx.draw_shell(G, with_labels=True, font_weight='bold')
+    plt.subplot(223)
+    nx.draw(T, with_labels=True, font_weight='bold')
+    plt.subplot(224)
+    nx.draw_shell(T, with_labels=True, font_weight='bold')
+    plt.show()
 
 def mwd(G, weight='weight'):
     dom_set = set([])
@@ -59,8 +78,7 @@ def findAllPath(G, components):
     pathDic = {}
     for i in range(len(components)):
         for j in range(i+1, len(components)):
-            A = components[i]
-            B = components[j]
+            A, B = components[i], components[j]
             for x in range(len(A)):
                 for y in range(len(B)):
                     if A[x] != B[y]:
@@ -75,11 +93,7 @@ def sortPathHelper(x):
         return float('inf')
 
 def common_member(a, b): 
-    a = set(a) 
-    b = set(b) 
-    if len(a.intersection(b)) > 0: 
-        return True
-    return False
+    return len(set(a).intersection(set(b) )) > 0
 
 def connectComponents(G, components):
     components = sorted(components, key=lambda x: len(x), reverse=True)

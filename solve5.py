@@ -1,14 +1,11 @@
 from solve0 import algo0
 from utils import is_valid_network, average_pairwise_distance
-from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree, addNodes, removeNodes
-
-def removeUnused(G, T):
-    for i in sorted(list(T.nodes), key=lambda x: len(G[x]), reverse=True):
-        if len(G[i]) == 1:
-            T.remove_node(i)
-    return T
+from helperFunctions import addNodes, removeNodes
 
 def algo5(G):
+    """
+    remove and node from mst.
+    """
     T = algo0(G.copy())
     allNodes = set(list(G.nodes))
     for _ in range(2):

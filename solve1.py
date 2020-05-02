@@ -1,11 +1,11 @@
 from utils import is_valid_network
-from helperFunctions import mwd, getComponents, findAllPath, sortPathHelper, connectComponents, oneNode, buildTree
+from helperFunctions import mwd, getComponents, connectComponents, buildTree
 
 def algo1(G):
-    n = len((G.nodes))
-    nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
-    if len(G[nodes[0]]) == n or len(G[nodes[0]]) == n - 1:
-        return oneNode(G, nodes)
+    """
+    find the mdcs and connect them as components.
+    Then find the min cost to connect components.
+    """
     domin = mwd(G, 'weight')
     components = getComponents(G, domin)
     nodes = connectComponents(G, components)
