@@ -43,7 +43,7 @@ def findTree(G):
     return T, Ts.index(T)
 
 if __name__ == '__main__':
-    testing = True
+    testing = False
     if testing:
         path = 'small-10.in'
         G = read_input_file('inputs/' + path)        
