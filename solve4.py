@@ -9,9 +9,8 @@ def algo4(G):
     """
     T = algo2(G)
     allNodes = set(list(G.nodes))
-    for _ in range(2):
-        used = set(list(T.nodes))
-        newT = addNodes(G, T, allNodes - used)
+    for _ in range(3):
+        newT = addNodes(G, T, allNodes - set(list(T.nodes)))
         newT = removeNodes(G.copy(), newT)
     assert is_valid_network(G, newT)
     return newT

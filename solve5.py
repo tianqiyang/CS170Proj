@@ -9,8 +9,7 @@ def algo5(G):
     T = algo0(G.copy())
     allNodes = set(list(G.nodes))
     for _ in range(2):
-        used = set(list(T.nodes))
-        T = addNodes(G, T, allNodes - used)
+        T = addNodes(G, T, allNodes - set(list(T.nodes)))
         T = removeNodes(G, T)
     assert is_valid_network(G, T)
     return T

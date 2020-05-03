@@ -1,4 +1,3 @@
-
 import networkx as nx
 
 def algo0(G):

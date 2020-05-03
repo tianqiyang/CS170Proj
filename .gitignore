@@ -8,3 +8,5 @@ spec.pdf
 
 out/*
 inputs/*
+
+*.cpython-37.pyc

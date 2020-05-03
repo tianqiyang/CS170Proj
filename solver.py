@@ -24,14 +24,14 @@ def findTree(G):
     try:
         ls = nx.find_cycle(G)
         if len(ls) == len(G.edges):
-            return algo8(G), 8
+            return algo8(G)
     except:
         pass
     n = len((G.nodes))
     nodes = sorted(list(G.nodes), key=lambda x: len(G[x]), reverse=True)
     # one node connect to all nodes
     if len(G[nodes[0]]) == n or len(G[nodes[0]]) == n - 1:
-        return oneNode(G, nodes), 9
+        return oneNode(G, nodes)
     Ts = []
     for t in range(len(func)):
         Ts.append(func[t](G.copy()))
@@ -40,29 +40,26 @@ def findTree(G):
         if value == 0:
             return Ts[-1], t
     T = findMin(Ts)
-    return T, Ts.index(T)
+    return T
 
 if __name__ == '__main__':
-    testing = False
+    testing = True
     if testing:
-        path = 'small-10.in'
+        path = 'large-128.in'
         G = read_input_file('inputs/' + path)        
         print(path)
-        T, c = findTree(G)
+        T = findTree(G)
         assert is_valid_network(G, T)
         print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
     else:
         files = sorted([filename for root, dirs, file in os.walk("./inputs") for filename in file], key=lambda x: int(x.replace('large-', '').replace('small-', '').replace('medium-', '').replace('.in', '')))
-        counter = [0] * 10
         for count, f in enumerate(files, 1):
             G = read_input_file("./inputs/" + f)
             print(count)
             print(f)
-            T, c = findTree(G)
-            counter[c] += 1
+            T = findTree(G)
             assert is_valid_network(G, T)
             print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
             write_output_file(T, f'out/{f.replace(".in", ".out")}')
         files = [filename for root, dirs, file in os.walk("./out") for filename in file ]
         print(len(files))
-        print(counter)
