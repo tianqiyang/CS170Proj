@@ -43,15 +43,16 @@ def findTree(G):
     return T
 
 if __name__ == '__main__':
-    testing = False
-    if testing:
-        path = 'large-3.in'
-        G = read_input_file('inputs/' + path)        
-        print(path)
-        T = findTree(G)
-        assert is_valid_network(G, T)
-        print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
-    else:
+    #testing = False
+    # if testing:
+    #     path = 'small-4.in'
+    #     G = read_input_file('inputs/' + path)        
+    #     print(path)
+    #     T = findTree(G)
+    #     assert is_valid_network(G, T)
+    #     print("Average pairwise distance: {}\n".format(average_pairwise_distance(T)))
+    # else:
+    if True:
         files = sorted([filename for root, dirs, file in os.walk("./inputs") for filename in file], key=lambda x: int(x.replace('large-', '').replace('small-', '').replace('medium-', '').replace('.in', '')))
         for count, f in enumerate(files, 1):
             G = read_input_file("./inputs/" + f)
