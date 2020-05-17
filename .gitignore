@@ -2,11 +2,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+__pycache__/
 
-#description
-spec.pdf
+*pdf
 
-out/*
-inputs/*
-
-*.cpython-37.pyc
+out/

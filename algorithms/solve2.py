@@ -1,7 +1,6 @@
 import networkx as nx
-from solve1 import algo1
-from utils import is_valid_network
-from helperFunctions import buildTree, addNodes
+from algorithms.solve1 import algo1
+from utils import is_valid_network, buildTree, addNodes
 
 def algo2(G):
     """

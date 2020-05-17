@@ -1,7 +1,6 @@
-from solve6 import algo6
+from algorithms.solve6 import algo6
 import networkx as nx
-from utils import is_valid_network
-from helperFunctions import addNodes, removeNodes, build
+from utils import is_valid_network, addNodes, removeNodes, build
 
 def algo7(G):
     """

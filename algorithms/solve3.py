@@ -1,7 +1,6 @@
 import networkx as nx
-from solve1 import algo1
-from utils import is_valid_network, average_pairwise_distance
-from helperFunctions import buildTree, addNodes, removeNodes
+from algorithms.solve1 import algo1
+from utils import is_valid_network, average_pairwise_distance, buildTree, addNodes, removeNodes
 
 def algo3(G):
     """

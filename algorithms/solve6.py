@@ -1,6 +1,5 @@
-from solve5 import algo5
-from utils import is_valid_network, average_pairwise_distance
-from helperFunctions import addNodes, removeNodes
+from algorithms.solve5 import algo5
+from utils import is_valid_network, average_pairwise_distance, addNodes, removeNodes
 
 def algo6(G):
     """

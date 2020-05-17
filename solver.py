@@ -1,18 +1,17 @@
 import networkx as nx
 from parse import read_input_file, write_output_file
-from utils import is_valid_network, average_pairwise_distance
-from helperFunctions import oneNode, draw, draw2
+from utils import is_valid_network, average_pairwise_distance, oneNode, draw, draw2
 import sys
 import os
-from solve0 import algo0
-from solve1 import algo1
-from solve2 import algo2
-from solve3 import algo3
-from solve4 import algo4
-from solve5 import algo5
-from solve6 import algo6
-from solve7 import algo7
-from solve8 import algo8
+from algorithms.solve0 import algo0
+from algorithms.solve1 import algo1
+from algorithms.solve2 import algo2
+from algorithms.solve3 import algo3
+from algorithms.solve4 import algo4
+from algorithms.solve5 import algo5
+from algorithms.solve6 import algo6
+from algorithms.solve7 import algo7
+from algorithms.solve8 import algo8
 
 func = [algo0, algo1, algo2, algo3, algo4, algo5, algo6, algo7]
 

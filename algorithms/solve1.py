@@ -1,5 +1,4 @@
-from utils import is_valid_network
-from helperFunctions import mwd, getComponents, connectComponents, buildTree
+from utils import is_valid_network, mwd, getComponents, connectComponents, buildTree
 
 def algo1(G):
     """
